@@ -3,11 +3,16 @@ name: Build and deploy FastAPI App Service
 on: 
     push:
         branches:
-            - main
+          - main
+
+concurrency:
+    group: ${{ github.workflow }}-{{ github.ref}}
+    cancel-in-progress: true
 
 jobs:
     build-and-deploy:
         runs-on: ubuntu-26
+        timeout-minutes: 15
         steps:
           - name: Checkout Source Code
             uses: actions/checkout@v7
