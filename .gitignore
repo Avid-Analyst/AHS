@@ -1,0 +1,8 @@
+.venv/
+.python_packages/
+__pycache__/
+*.zip
+LogFiles/
+deployments/
+logs_extracted/
+.env
