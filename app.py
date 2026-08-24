@@ -1,7 +1,7 @@
 import json # import json library to serilize dict patloads into string format for SQL storage
 from os import getenv # to retreive environment variables safely
 from dotenv import load_dotenv # load environemnt vriables from local .env file
-from fastapi import FastAPI, Request , status, Depends # request/response management
+from fastapi import FastAPI, Request , status, Depends, HTTPException  # request/response management
 from fastapi.responses import JSONResponse # format HTTP responses with status codes
 from fastapi.exceptions import RequestValidationError # catch failing pydantic validations
 from mssql_python import connect
@@ -13,11 +13,25 @@ app = FastAPI(title ="AHS telemetry Ingestion Service")
 
 # Helper function to open database connection
 def get_db():
-    conn = connect(getenv("AZURE_SQL_CONNECTIONSTRING")) 
+    conn_str = getenv("AZURE_SQL_CONNECTIONSTRING")
+    
+    if not conn_str:
+        raise HTTPException(
+            status_code=500, 
+            detail="AZURE_SQL_CONNECTIONSTRING environment variable is missing."
+        )
+    
     try:
+        conn = connect(conn_str)
         yield conn
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Database Connection Error: {str(e)}"
+        )
     finally:
-        conn.close()
+        if 'conn' in locals():
+            conn.close()
      
 
 
