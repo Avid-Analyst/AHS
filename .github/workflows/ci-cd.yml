@@ -29,7 +29,8 @@ jobs:
           pip install pytest httpx
 
       - name: Execute Pytest Suite
-        env: AZURE_SQLCONNECTIONSTRING: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+        env: 
+          AZURE_SQLCONNECTIONSTRING: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
         run: |
           pytest
 
