@@ -1,27 +1,33 @@
-name: AHS pipeline Telemetry CI/CD Pipeline
+name: AHS Telemetry CI/CD Pipeline
+
 on:
   push:
-    branches: ["main"]
-    pull_request:
-    branches: ["main"]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
-  jobs:
-    test:
-      name: Run pytest & Schema Validation
-      runs-on: ubuntu-latest
+jobs:
+  test:
+    name: Run Pytest & Schema Validation
+    runs-on: ubuntu-latest
 
-      steps:
-        -name: Checkout Code
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
         uses: actions/setup-python@v5
         with:
           python-version: "3.14"
 
-        -name: Install Dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest httpx
 
-        -name: Execute Pytest Suite
+      - name: Execute Pytest Suite
         run: |
           pytest
