@@ -8,6 +8,7 @@ from mssql_python import connect
 
 from schemas_rules import TruckTelemetry, DeadLetterRecord
 
+
 load_dotenv()
 app = FastAPI(title ="AHS telemetry Ingestion Service")
 
@@ -83,7 +84,7 @@ def handle_validation_error(request: Request, exc: RequestValidationError):
             # Commit transactions to database
             conn.commit()
         finally:
-            conn.closed()
+            conn.close()
     # catch DB errors to prevent crashes if login fails
     except Exception as db_err:
         print(f"DLQ Persistence failure: {db_err}")
@@ -127,7 +128,7 @@ def create_event(telemetry: TruckTelemetry, conn = Depends(get_db)):
         (
             telemetry.truck_id,
             telemetry.vendor_id,
-            str(telemetry.timestamp),
+            telemetry.timestamp.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3],
             telemetry.mine_zone,
             telemetry.network_latency_ms,
             telemetry.engine_temp_c,
