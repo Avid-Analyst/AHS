@@ -30,7 +30,7 @@ jobs:
 
       - name: Execute Pytest Suite
         env: 
-          AZURE_SQLCONNECTIONSTRING: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
+          AZURE_SQL_CONNECTIONSTRING: ${{ secrets.AZURE_SQL_CONNECTIONSTRING }}
         run: |
           pytest
 
